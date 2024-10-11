@@ -10,20 +10,20 @@ const factory = createFactory();
 const loginSchema = z.object({
   username: z
     .string({
-      message: 'Username tidak valid',
+      message: 'Username must be a string',
     })
     .min(1, {
-      message: 'Username tidak boleh kosong',
+      message: 'Username cannot be empty',
     })
     .max(100, {
       message: 'Username cannot be longer than 100 characters',
     }),
   password: z
     .string({
-      message: 'Password tidak valid',
+      message: 'Password must be a string',
     })
     .min(1, {
-      message: 'Password tidak boleh kosong',
+      message: 'Password cannot be empty',
     }),
 });
 
