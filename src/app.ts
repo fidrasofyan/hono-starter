@@ -7,7 +7,7 @@ const app = new Hono();
 
 // Middleware
 if (config.NODE_ENV === 'development') {
-	app.use(logger());
+  app.use(logger());
 }
 
 // Route
@@ -15,24 +15,24 @@ app.route('/', routes);
 
 // Not found
 app.notFound((c) => {
-	return c.json(
-		{
-			message: 'Route not found',
-		},
-		404,
-	);
+  return c.json(
+    {
+      message: 'Route not found',
+    },
+    404,
+  );
 });
 
 // Error handler
 app.onError((err, c) => {
-	// biome-ignore lint/suspicious/noConsole: <explanation>
-	console.error(err);
-	return c.json(
-		{
-			message: 'Internal server error',
-		},
-		500,
-	);
+  // biome-ignore lint/suspicious/noConsole: <explanation>
+  console.error(err);
+  return c.json(
+    {
+      message: 'Internal server error',
+    },
+    500,
+  );
 });
 
 export { app };
