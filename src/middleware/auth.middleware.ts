@@ -43,7 +43,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
   let decoded: JWTPayload;
 
   try {
-    decoded = decoded = await verifyJWT(token, config.USER_TOKEN_SECRET_KEY);
+    decoded = await verifyJWT(token, config.USER_TOKEN_SECRET_KEY);
   } catch (_error) {
     return c.json(
       {
