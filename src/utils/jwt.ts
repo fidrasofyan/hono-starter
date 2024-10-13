@@ -1,5 +1,5 @@
+import type { JWTPayload } from '@/types';
 import { sign, verify } from 'hono/jwt';
-import type { JWTPayload } from '../types';
 
 export async function generateJWT(
   payload: JWTPayload,

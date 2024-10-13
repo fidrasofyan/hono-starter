@@ -1,10 +1,10 @@
+import config from '@/config';
+import { kysely } from '@/database';
+import { verifyPassword } from '@/utils/hashing';
+import { generateJWT } from '@/utils/jwt';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { z } from 'zod';
-import config from '../../../config';
-import { kysely } from '../../../database';
-import { verifyPassword } from '../../../utils';
-import { generateJWT } from '../../../utils';
 
 const factory = createFactory();
 const loginSchema = z.object({

@@ -1,10 +1,10 @@
+import config from '@/config';
+import { kysely } from '@/database';
+import type { JWTPayload } from '@/types';
+import { generateJWT, verifyJWT } from '@/utils/jwt';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { z } from 'zod';
-import config from '../../../config';
-import { kysely } from '../../../database';
-import type { JWTPayload } from '../../../types';
-import { generateJWT, verifyJWT } from '../../../utils';
 
 const factory = createFactory();
 const getTokenSchema = z.object({

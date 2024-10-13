@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import config from '@/config';
 import {
   FileMigrationProvider,
   Kysely,
@@ -9,7 +10,6 @@ import {
 } from 'kysely';
 import type { DB } from 'kysely-codegen';
 import { Pool } from 'pg';
-import config from '../config';
 
 const pool = new Pool({
   host: config.DATABASE_HOST,

@@ -1,8 +1,8 @@
+import config from '@/config';
+import { kysely } from '@/database';
+import type { JWTPayload } from '@/types';
+import { verifyJWT } from '@/utils/jwt';
 import { createMiddleware } from 'hono/factory';
-import config from '../config';
-import { kysely } from '../database';
-import type { JWTPayload } from '../types';
-import { verifyJWT } from '../utils';
 
 export const authMiddleware = createMiddleware(async (c, next) => {
   // Exclude routes

@@ -25,7 +25,13 @@
     "noPropertyAccessFromIndexSignature": true,
 
     // Build
-    "outDir": "dist"
+    "outDir": "dist",
+
+    // Shortcut
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
