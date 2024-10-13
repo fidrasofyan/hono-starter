@@ -1,8 +1,9 @@
+import { kysely } from '@/database';
+import { escapeHTML } from '@/utils/common';
+import { hashPassword } from '@/utils/hashing';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { z } from 'zod';
-import { kysely } from '../../../database';
-import { escapeHTML, hashPassword } from '../../../utils';
 
 const factory = createFactory();
 const registerSchema = z.object({
