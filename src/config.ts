@@ -17,7 +17,9 @@ function readEnvSync(name: string): string {
 
 const config = {
   // App
-  NODE_ENV: readEnvSync('NODE_ENV') as 'development' | 'production',
+  NODE_ENV: readEnvSync('NODE_ENV') as
+    | 'development'
+    | 'production',
   APP_NAME: readEnvSync('APP_NAME'),
   APP_TIMEZONE: readEnvSync('APP_TIMEZONE'),
   APP_LOCALE: readEnvSync('APP_LOCALE'),
@@ -29,7 +31,9 @@ const config = {
 
   // Database
   DATABASE_HOST: readEnvSync('DATABASE_HOST'),
-  DATABASE_PORT: Number.parseInt(readEnvSync('DATABASE_PORT')),
+  DATABASE_PORT: Number.parseInt(
+    readEnvSync('DATABASE_PORT'),
+  ),
   DATABASE_USER: readEnvSync('DATABASE_USER'),
   DATABASE_PASSWORD: readEnvSync('DATABASE_PASSWORD'),
   DATABASE_NAME: readEnvSync('DATABASE_NAME'),
@@ -38,8 +42,12 @@ const config = {
   ),
 
   // JWT
-  USER_TOKEN_SECRET_KEY: readEnvSync('USER_TOKEN_SECRET_KEY'),
-  USER_REFRESH_TOKEN_SECRET_KEY: readEnvSync('USER_REFRESH_TOKEN_SECRET_KEY'),
+  USER_TOKEN_SECRET_KEY: readEnvSync(
+    'USER_TOKEN_SECRET_KEY',
+  ),
+  USER_REFRESH_TOKEN_SECRET_KEY: readEnvSync(
+    'USER_REFRESH_TOKEN_SECRET_KEY',
+  ),
 };
 
 // biome-ignore lint/suspicious/noConsole: <explanation>

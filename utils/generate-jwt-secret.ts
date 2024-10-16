@@ -1,5 +1,10 @@
 import { randomBytes } from 'node:crypto';
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
 
 function modifyEnvLine(envName: string, newValue: string) {
   if (!existsSync('./.env')) {
@@ -21,7 +26,10 @@ function modifyEnvLine(envName: string, newValue: string) {
   writeFileSync('./.env', updatedEnvData, 'utf8');
 }
 
-modifyEnvLine('USER_TOKEN_SECRET_KEY', randomBytes(32).toString('base64'));
+modifyEnvLine(
+  'USER_TOKEN_SECRET_KEY',
+  randomBytes(32).toString('base64'),
+);
 modifyEnvLine(
   'USER_REFRESH_TOKEN_SECRET_KEY',
   randomBytes(32).toString('base64'),
