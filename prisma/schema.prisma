@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator kysely {
+  provider     = "prisma-kysely"
+  output       = "../src/database"
+  fileName     = "types.ts"
+  enumFileName = "enums.ts"
+}
+
+// Models
+
+model business {
+  business_id Int       @id @default(autoincrement())
+  is_active   Boolean
+  name        String    @unique
+  address     String    @db.VarChar(100)
+  created_at  DateTime  @db.Timestamptz()
+  updated_at  DateTime? @db.Timestamptz()
+  user        user[]
+}
+
+model permission {
+  permission_id   Int               @id @default(autoincrement())
+  name            String            @unique
+  created_at      DateTime          @db.Timestamptz()
+  updated_at      DateTime?         @db.Timestamptz()
+  role_permission role_permission[]
+}
+
+model role {
+  role_id         Int               @id @default(autoincrement())
+  name            String            @unique
+  created_at      DateTime          @db.Timestamptz()
+  updated_at      DateTime?         @db.Timestamptz()
+  user_role       user_role[]
+  role_permission role_permission[]
+}
+
+model role_permission {
+  role_id       Int
+  permission_id Int
+  created_at    DateTime   @db.Timestamptz()
+  role          role       @relation(fields: [role_id], references: [role_id], onUpdate: Cascade, onDelete: Cascade)
+  permission    permission @relation(fields: [permission_id], references: [permission_id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@id([role_id, permission_id])
+}
+
+model user {
+  user_id     Int         @id @default(autoincrement())
+  is_active   Boolean
+  username    String      @unique @db.VarChar(100)
+  password    String      @db.VarChar(255)
+  first_name  String
+  last_name   String?
+  created_at  DateTime    @db.Timestamptz()
+  updated_at  DateTime?   @db.Timestamptz()
+  business_id Int
+  business    business    @relation(fields: [business_id], references: [business_id], onUpdate: Cascade, onDelete: Cascade)
+  user_role   user_role[]
+}
+
+model user_role {
+  user_id    Int
+  role_id    Int
+  created_at DateTime @db.Timestamptz()
+  user       user     @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
+  role       role     @relation(fields: [role_id], references: [role_id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@id([user_id, role_id])
+}

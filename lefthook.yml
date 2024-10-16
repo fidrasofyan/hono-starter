@@ -1,6 +1,9 @@
 pre-commit:
   parallel: true
   commands:
+    type-check:
+      glob: "*.{js,ts}"
+      run: bun tsc --noEmit
     code-check:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
       run: bun biome check --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}

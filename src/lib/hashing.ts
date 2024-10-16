@@ -1,4 +1,6 @@
-export async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(
+  password: string,
+): Promise<string> {
   return await Bun.password.hash(password, {
     algorithm: 'argon2id',
     memoryCost: 65536,

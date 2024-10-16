@@ -1,7 +1,7 @@
 import config from '@/config';
 import { kysely } from '@/database';
+import { generateJWT, verifyJWT } from '@/lib/jwt';
 import type { JWTPayload } from '@/types';
-import { generateJWT, verifyJWT } from '@/utils/jwt';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { z } from 'zod';
@@ -9,7 +9,7 @@ import { z } from 'zod';
 const factory = createFactory();
 const getTokenSchema = z.object({
   authorization: z.string({
-    message: 'Invalid authorization header',
+    message: 'Authorization header tidak valid',
   }),
 });
 
@@ -36,7 +36,7 @@ export const getTokenHandlers = factory.createHandlers(
     if (!token) {
       return c.json(
         {
-          message: 'Invalid token',
+          message: 'Token tidak valid',
         },
         400,
       );
@@ -52,7 +52,7 @@ export const getTokenHandlers = factory.createHandlers(
     } catch (_error) {
       return c.json(
         {
-          message: 'Invalid token',
+          message: 'Token tidak valid',
         },
         401,
       );
@@ -60,14 +60,42 @@ export const getTokenHandlers = factory.createHandlers(
 
     const user = await kysely
       .selectFrom('user')
-      .select(['id'])
-      .where('id', '=', decoded.userId)
+      .innerJoin(
+        'business',
+        'business.business_id',
+        'user.business_id',
+      )
+      .select([
+        'user_id',
+        'user.is_active',
+        'business.business_id',
+        'business.is_active as business_is_active',
+      ])
+      .where('user_id', '=', decoded.user_id)
       .executeTakeFirst();
 
     if (!user) {
       return c.json(
         {
-          message: 'User not found',
+          message: 'User tidak ditemukan',
+        },
+        401,
+      );
+    }
+
+    if (!user.business_is_active) {
+      return c.json(
+        {
+          message: 'Aplikasi tidak aktif',
+        },
+        401,
+      );
+    }
+
+    if (!user.is_active) {
+      return c.json(
+        {
+          message: 'User tidak aktif',
         },
         401,
       );
@@ -80,7 +108,8 @@ export const getTokenHandlers = factory.createHandlers(
             {
               iat: Math.floor(Date.now() / 1000),
               exp: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
-              userId: user.id,
+              business_id: user.business_id,
+              user_id: user.user_id,
             },
             config.USER_TOKEN_SECRET_KEY,
           ),

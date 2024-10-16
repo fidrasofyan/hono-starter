@@ -8,4 +8,6 @@ const httpServer = Bun.serve({
 });
 
 // biome-ignore lint/suspicious/noConsole: <explanation>
-console.log(`${config.APP_NAME} # server running at ${httpServer.url}`);
+console.log(
+  `${config.APP_NAME} # server running at ${httpServer.url}`,
+);

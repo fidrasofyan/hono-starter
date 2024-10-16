@@ -11,8 +11,14 @@ export const getUserInfoHandlers = factory.createHandlers(
 
     const user = await kysely
       .selectFrom('user')
-      .select(['username', 'created_at'])
-      .where('id', '=', jwtPayload.userId)
+      .select([
+        'username',
+        'first_name',
+        'last_name',
+        'created_at',
+        'updated_at',
+      ])
+      .where('user_id', '=', jwtPayload.user_id)
       .executeTakeFirst();
 
     return c.json(
