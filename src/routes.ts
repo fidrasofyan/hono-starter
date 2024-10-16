@@ -1,13 +1,11 @@
 import { Hono } from 'hono';
 import { userApp } from './app/user/user.app';
-import { authMiddleware } from './middleware';
+import { authenticationMiddleware } from './middleware';
 
-const routes = new Hono().basePath('/api/v1');
-
-// Middleware
-routes.use(authMiddleware);
-
-// Routes
-routes.route('/', userApp);
-
-export { routes };
+export const routes = new Hono()
+  // Prefix
+  .basePath('/api/v1')
+  // Middleware
+  .use(authenticationMiddleware)
+  // Routes
+  .route('/', userApp);

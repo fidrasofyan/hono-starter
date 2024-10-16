@@ -4,7 +4,7 @@ import { verifyJWT } from '@/lib/jwt';
 import type { JWTPayload } from '@/types';
 import { createMiddleware } from 'hono/factory';
 
-export const authMiddleware = createMiddleware(
+export const authenticationMiddleware = createMiddleware(
   async (c, next) => {
     // Exclude routes
     if (
