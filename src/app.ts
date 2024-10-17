@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
 import config from './config';
 import { routes } from './routes';
@@ -25,6 +26,15 @@ app.notFound((c) => {
 
 // Error handler
 app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return c.json(
+      {
+        message: 'Invalid request',
+      },
+      400,
+    );
+  }
+
   // biome-ignore lint/suspicious/noConsole: <explanation>
   console.error(err);
   return c.json(
