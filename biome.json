@@ -30,7 +30,8 @@
         "noUnusedVariables": "error"
       },
       "suspicious": {
-        "noConsole": "off"
+        "noConsole": "off",
+        "noExplicitAny": "off"
       }
     }
   },

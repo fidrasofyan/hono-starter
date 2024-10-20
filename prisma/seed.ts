@@ -9,55 +9,55 @@ try {
   // Create business
   await prisma.business.upsert({
     where: {
-      business_id: businessId,
+      businessId: businessId,
     },
     create: {
-      business_id: businessId,
-      is_active: true,
+      businessId: businessId,
+      isActive: true,
       name: 'Bisnis Abc',
       address: 'Jl. Abc',
-      created_at: date,
-      updated_at: date,
+      createdAt: date,
+      updatedAt: date,
     },
     update: {
-      is_active: true,
+      isActive: true,
       name: 'Bisnis Abc',
       address: 'Jl. Abc',
-      created_at: date,
-      updated_at: date,
+      createdAt: date,
+      updatedAt: date,
     },
   });
 
   // Create user
   await prisma.user.upsert({
     where: {
-      user_id: 1,
+      userId: 1,
     },
     create: {
-      is_active: true,
+      isActive: true,
       username: 'admin',
       password: await Bun.password.hash('admin', {
         algorithm: 'argon2id',
         memoryCost: 65536,
         timeCost: 3,
       }),
-      first_name: 'Admin',
-      created_at: date,
-      updated_at: date,
-      business_id: businessId,
+      firstName: 'Admin',
+      createdAt: date,
+      updatedAt: date,
+      businessId: businessId,
     },
     update: {
-      is_active: true,
+      isActive: true,
       username: 'admin',
       password: await Bun.password.hash('admin', {
         algorithm: 'argon2id',
         memoryCost: 65536,
         timeCost: 3,
       }),
-      first_name: 'Admin',
-      created_at: date,
-      updated_at: date,
-      business_id: businessId,
+      firstName: 'Admin',
+      createdAt: date,
+      updatedAt: date,
+      businessId: businessId,
     },
   });
 

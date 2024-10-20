@@ -10,12 +10,12 @@ Content-Type: application/json
 }
 
 ###
-@refresh_token = {{login.response.body.data.refresh_token}}
+@refreshToken = {{login.response.body.data.refreshToken}}
 
 ### Refresh token
 # @name getToken
 GET http://127.0.0.1:3030/api/v1/token HTTP/1.1
-Authorization: Bearer {{refresh_token}}
+Authorization: Bearer {{refreshToken}}
 
 ###
 @token = {{getToken.response.body.data.token}}
