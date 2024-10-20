@@ -27,13 +27,12 @@ function modifyEnvLine(envName: string, newValue: string) {
 }
 
 modifyEnvLine(
-  'USER_TOKEN_SECRET_KEY',
+  'TOKEN_SECRET_KEY',
   randomBytes(32).toString('base64'),
 );
 modifyEnvLine(
-  'USER_REFRESH_TOKEN_SECRET_KEY',
+  'REFRESH_TOKEN_SECRET_KEY',
   randomBytes(32).toString('base64'),
 );
 
-// biome-ignore lint/suspicious/noConsole: <explanation>
 console.log('Done!');

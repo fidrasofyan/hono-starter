@@ -43,7 +43,7 @@ export const authenticationMiddleware = createMiddleware(
     try {
       decoded = await verifyJWT(
         token,
-        config.USER_TOKEN_SECRET_KEY,
+        config.TOKEN_SECRET_KEY,
       );
     } catch (_error) {
       return c.json(

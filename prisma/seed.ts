@@ -63,7 +63,6 @@ try {
 
   await prisma.$disconnect();
 } catch (error) {
-  // biome-ignore lint/suspicious/noConsole: <explanation>
   console.error(error);
   await prisma.$disconnect();
   process.exit(1);

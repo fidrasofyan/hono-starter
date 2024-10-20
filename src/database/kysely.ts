@@ -26,7 +26,6 @@ export const kysely = new Kysely<DB>({
 
 // Test connection
 await sql`SELECT 1`.execute(kysely);
-// biome-ignore lint/suspicious/noConsole: <explanation>
 console.log(
   `${config.APP_NAME} # database connection has been established successfully`,
 );

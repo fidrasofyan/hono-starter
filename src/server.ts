@@ -7,7 +7,6 @@ const httpServer = Bun.serve({
   fetch: app.fetch,
 });
 
-// biome-ignore lint/suspicious/noConsole: <explanation>
 console.log(
   `${config.APP_NAME} # server running at ${httpServer.url}`,
 );

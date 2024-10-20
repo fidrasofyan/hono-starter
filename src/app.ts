@@ -35,7 +35,6 @@ app.onError((err, c) => {
     );
   }
 
-  // biome-ignore lint/suspicious/noConsole: <explanation>
   console.error(err);
   return c.json(
     {
