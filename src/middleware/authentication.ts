@@ -58,15 +58,15 @@ export const authenticationMiddleware = createMiddleware(
       .selectFrom('user')
       .innerJoin(
         'business',
-        'business.business_id',
-        'user.business_id',
+        'business.businessId',
+        'user.businessId',
       )
       .select([
-        'user.user_id',
-        'user.is_active',
-        'business.is_active as business_is_active',
+        'user.userId',
+        'user.isActive',
+        'business.isActive as businessIsActive',
       ])
-      .where('user_id', '=', decoded.user_id)
+      .where('userId', '=', decoded.userId)
       .executeTakeFirst();
 
     if (!user) {
@@ -78,7 +78,7 @@ export const authenticationMiddleware = createMiddleware(
       );
     }
 
-    if (!user.business_is_active) {
+    if (!user.businessIsActive) {
       return c.json(
         {
           message: 'Aplikasi tidak aktif',
@@ -87,7 +87,7 @@ export const authenticationMiddleware = createMiddleware(
       );
     }
 
-    if (!user.is_active) {
+    if (!user.isActive) {
       return c.json(
         {
           message: 'User tidak aktif',

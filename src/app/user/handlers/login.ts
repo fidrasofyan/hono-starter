@@ -52,16 +52,16 @@ export const loginHandlers = factory.createHandlers(
       .selectFrom('user')
       .innerJoin(
         'business',
-        'business.business_id',
-        'user.business_id',
+        'business.businessId',
+        'user.businessId',
       )
       .select([
-        'user.user_id',
-        'user.is_active',
+        'user.userId',
+        'user.isActive',
         'user.username',
         'user.password',
-        'business.business_id',
-        'business.is_active as business_is_active',
+        'business.businessId',
+        'business.isActive as businessIsActive',
       ])
       .where('username', '=', dto.username)
       .executeTakeFirst();
@@ -75,7 +75,7 @@ export const loginHandlers = factory.createHandlers(
       );
     }
 
-    if (!user.business_is_active) {
+    if (!user.businessIsActive) {
       return c.json(
         {
           message: 'Aplikasi tidak aktif',
@@ -95,7 +95,7 @@ export const loginHandlers = factory.createHandlers(
       );
     }
 
-    if (!user.is_active) {
+    if (!user.isActive) {
       return c.json(
         {
           message: 'User tidak aktif',
@@ -114,12 +114,12 @@ export const loginHandlers = factory.createHandlers(
               exp:
                 Math.floor(Date.now() / 1000) +
                 60 * config.TOKEN_EXPIRES_IN_MINUTES,
-              business_id: user.business_id,
-              user_id: user.user_id,
+              businessId: user.businessId,
+              userId: user.userId,
             },
             config.TOKEN_SECRET_KEY,
           ),
-          refresh_token: await generateJWT(
+          refreshToken: await generateJWT(
             {
               iat: Math.floor(Date.now() / 1000),
               exp:
@@ -128,8 +128,8 @@ export const loginHandlers = factory.createHandlers(
                   60 *
                   24 *
                   config.REFRESH_TOKEN_EXPIRES_IN_DAYS,
-              business_id: user.business_id,
-              user_id: user.user_id,
+              businessId: user.businessId,
+              userId: user.userId,
             },
             config.REFRESH_TOKEN_SECRET_KEY,
           ),

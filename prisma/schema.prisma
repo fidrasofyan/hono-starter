@@ -17,62 +17,72 @@ generator kysely {
 // Models
 
 model business {
-  business_id Int       @id @default(autoincrement())
-  is_active   Boolean
-  name        String    @unique
-  address     String    @db.VarChar(100)
-  created_at  DateTime  @db.Timestamptz()
-  updated_at  DateTime? @db.Timestamptz()
-  user        user[]
+  businessId Int       @id @default(autoincrement())
+  isActive   Boolean
+  name       String    @unique @db.VarChar(50)
+  address    String?   @db.VarChar(100)
+  createdAt  DateTime  @db.Timestamptz()
+  updatedAt  DateTime? @db.Timestamptz()
+  user       user[]
+  role       role[]
 }
 
 model permission {
-  permission_id   Int               @id @default(autoincrement())
-  name            String            @unique
-  created_at      DateTime          @db.Timestamptz()
-  updated_at      DateTime?         @db.Timestamptz()
-  role_permission role_permission[]
+  permissionId   Int               @id @default(autoincrement())
+  name           String            @unique @db.VarChar(50)
+  createdAt      DateTime          @db.Timestamptz()
+  updatedAt      DateTime?         @db.Timestamptz()
+  rolePermission role_permission[]
 }
 
 model role {
-  role_id         Int               @id @default(autoincrement())
-  name            String            @unique
-  created_at      DateTime          @db.Timestamptz()
-  updated_at      DateTime?         @db.Timestamptz()
-  user_role       user_role[]
-  role_permission role_permission[]
+  roleId         Int               @id @default(autoincrement())
+  name           String            @db.VarChar(50)
+  description    String?           @db.VarChar(100)
+  createdAt      DateTime          @db.Timestamptz()
+  updatedAt      DateTime?         @db.Timestamptz()
+  userRole       user_role[]
+  rolePermission role_permission[]
+  business       business          @relation(fields: [businessId], references: [businessId], onUpdate: Cascade, onDelete: Cascade)
+  businessId     Int
+
+  @@unique([name, businessId])
 }
 
 model role_permission {
-  role_id       Int
-  permission_id Int
-  created_at    DateTime   @db.Timestamptz()
-  role          role       @relation(fields: [role_id], references: [role_id], onUpdate: Cascade, onDelete: Cascade)
-  permission    permission @relation(fields: [permission_id], references: [permission_id], onUpdate: Cascade, onDelete: Cascade)
+  roleId       Int
+  permissionId Int
+  createdAt    DateTime   @db.Timestamptz()
+  role         role       @relation(fields: [roleId], references: [roleId], onUpdate: Cascade, onDelete: Cascade)
+  permission   permission @relation(fields: [permissionId], references: [permissionId], onUpdate: Cascade, onDelete: Cascade)
 
-  @@id([role_id, permission_id])
+  @@id([roleId, permissionId])
 }
 
 model user {
-  user_id     Int         @id @default(autoincrement())
-  is_active   Boolean
-  username    String      @unique @db.VarChar(100)
-  password    String      @db.VarChar(255)
-  first_name  String
-  last_name   String?
-  created_at  DateTime    @db.Timestamptz()
-  updated_at  DateTime?   @db.Timestamptz()
-  business_id Int
-  business    business    @relation(fields: [business_id], references: [business_id], onUpdate: Cascade, onDelete: Cascade)
-  user_role   user_role[]
+  userId     Int         @id @default(autoincrement())
+  isActive   Boolean
+  email      String?     @db.VarChar(100)
+  username   String      @db.VarChar(100)
+  password   String      @db.VarChar(255)
+  firstName  String      @db.VarChar(50)
+  lastName   String?     @db.VarChar(50)
+  createdAt  DateTime    @db.Timestamptz()
+  updatedAt  DateTime?   @db.Timestamptz()
+  business   business    @relation(fields: [businessId], references: [businessId], onUpdate: Cascade, onDelete: Cascade)
+  businessId Int
+  userRole   user_role[]
+
+  @@unique([email, businessId])
+  @@unique([username, businessId])
 }
 
 model user_role {
-  user_id    Int
-  role_id    Int
-  created_at DateTime @db.Timestamptz()
-  user       user     @relation(fields: [user_id], references: [user_id], onUpdate: Cascade, onDelete: Cascade)
-  role       role     @relation(fields: [role_id], references: [role_id], onUpdate: Cascade, onDelete: Cascade)
+  userId    Int
+  roleId    Int
+  createdAt DateTime @db.Timestamptz()
+  user      user     @relation(fields: [userId], references: [userId], onUpdate: Cascade, onDelete: Cascade)
+  role      role     @relation(fields: [roleId], references: [roleId], onUpdate: Cascade, onDelete: Cascade)
 
-  @@id([user_id, role_id])
+  @@id([userId, roleId])
 }

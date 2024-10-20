@@ -5,45 +5,48 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type business = {
-    business_id: Generated<number>;
-    is_active: boolean;
+    businessId: Generated<number>;
+    isActive: boolean;
     name: string;
-    address: string;
-    created_at: Timestamp;
-    updated_at: Timestamp | null;
+    address: string | null;
+    createdAt: Timestamp;
+    updatedAt: Timestamp | null;
 };
 export type permission = {
-    permission_id: Generated<number>;
+    permissionId: Generated<number>;
     name: string;
-    created_at: Timestamp;
-    updated_at: Timestamp | null;
+    createdAt: Timestamp;
+    updatedAt: Timestamp | null;
 };
 export type role = {
-    role_id: Generated<number>;
+    roleId: Generated<number>;
     name: string;
-    created_at: Timestamp;
-    updated_at: Timestamp | null;
+    description: string | null;
+    createdAt: Timestamp;
+    updatedAt: Timestamp | null;
+    businessId: number;
 };
 export type role_permission = {
-    role_id: number;
-    permission_id: number;
-    created_at: Timestamp;
+    roleId: number;
+    permissionId: number;
+    createdAt: Timestamp;
 };
 export type user = {
-    user_id: Generated<number>;
-    is_active: boolean;
+    userId: Generated<number>;
+    isActive: boolean;
+    email: string | null;
     username: string;
     password: string;
-    first_name: string;
-    last_name: string | null;
-    created_at: Timestamp;
-    updated_at: Timestamp | null;
-    business_id: number;
+    firstName: string;
+    lastName: string | null;
+    createdAt: Timestamp;
+    updatedAt: Timestamp | null;
+    businessId: number;
 };
 export type user_role = {
-    user_id: number;
-    role_id: number;
-    created_at: Timestamp;
+    userId: number;
+    roleId: number;
+    createdAt: Timestamp;
 };
 export type DB = {
     business: business;

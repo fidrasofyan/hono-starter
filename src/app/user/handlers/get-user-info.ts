@@ -13,12 +13,12 @@ export const getUserInfoHandlers = factory.createHandlers(
       .selectFrom('user')
       .select([
         'username',
-        'first_name',
-        'last_name',
-        'created_at',
-        'updated_at',
+        'firstName',
+        'lastName',
+        'createdAt',
+        'updatedAt',
       ])
-      .where('user_id', '=', jwtPayload.user_id)
+      .where('userId', '=', jwtPayload.userId)
       .executeTakeFirst();
 
     return c.json(
