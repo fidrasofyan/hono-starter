@@ -42,15 +42,18 @@ const config = {
   ),
 
   // JWT
-  USER_TOKEN_SECRET_KEY: readEnvSync(
-    'USER_TOKEN_SECRET_KEY',
+  TOKEN_SECRET_KEY: readEnvSync('TOKEN_SECRET_KEY'),
+  REFRESH_TOKEN_SECRET_KEY: readEnvSync(
+    'REFRESH_TOKEN_SECRET_KEY',
   ),
-  USER_REFRESH_TOKEN_SECRET_KEY: readEnvSync(
-    'USER_REFRESH_TOKEN_SECRET_KEY',
+  TOKEN_EXPIRES_IN_MINUTES: Number.parseInt(
+    readEnvSync('TOKEN_EXPIRES_IN_MINUTES'),
+  ),
+  REFRESH_TOKEN_EXPIRES_IN_DAYS: Number.parseInt(
+    readEnvSync('REFRESH_TOKEN_EXPIRES_IN_DAYS'),
   ),
 };
 
-// biome-ignore lint/suspicious/noConsole: <explanation>
 console.log(
   `${config.APP_NAME} # Bun: v${Bun.version} - env: ${config.NODE_ENV} - version: v${packageJson.version}`,
 );

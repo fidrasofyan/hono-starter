@@ -47,7 +47,7 @@ export const getTokenHandlers = factory.createHandlers(
     try {
       decoded = decoded = await verifyJWT(
         token,
-        config.USER_REFRESH_TOKEN_SECRET_KEY,
+        config.REFRESH_TOKEN_SECRET_KEY,
       );
     } catch (_error) {
       return c.json(
@@ -107,11 +107,13 @@ export const getTokenHandlers = factory.createHandlers(
           token: await generateJWT(
             {
               iat: Math.floor(Date.now() / 1000),
-              exp: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
+              exp:
+                Math.floor(Date.now() / 1000) +
+                60 * config.TOKEN_EXPIRES_IN_MINUTES,
               business_id: user.business_id,
               user_id: user.user_id,
             },
-            config.USER_TOKEN_SECRET_KEY,
+            config.TOKEN_SECRET_KEY,
           ),
         },
       },

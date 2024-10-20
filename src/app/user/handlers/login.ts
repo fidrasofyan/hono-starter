@@ -111,22 +111,27 @@ export const loginHandlers = factory.createHandlers(
           token: await generateJWT(
             {
               iat: Math.floor(Date.now() / 1000),
-              exp: Math.floor(Date.now() / 1000) + 60 * 10, // 10 minutes
+              exp:
+                Math.floor(Date.now() / 1000) +
+                60 * config.TOKEN_EXPIRES_IN_MINUTES,
               business_id: user.business_id,
               user_id: user.user_id,
             },
-            config.USER_TOKEN_SECRET_KEY,
+            config.TOKEN_SECRET_KEY,
           ),
           refresh_token: await generateJWT(
             {
               iat: Math.floor(Date.now() / 1000),
               exp:
                 Math.floor(Date.now() / 1000) +
-                60 * 60 * 24 * 30, // 30 days
+                60 *
+                  60 *
+                  24 *
+                  config.REFRESH_TOKEN_EXPIRES_IN_DAYS,
               business_id: user.business_id,
               user_id: user.user_id,
             },
-            config.USER_REFRESH_TOKEN_SECRET_KEY,
+            config.REFRESH_TOKEN_SECRET_KEY,
           ),
         },
       },
