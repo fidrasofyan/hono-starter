@@ -22,19 +22,19 @@
     "seed": "bun prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "5.21.1",
-    "hono": "4.6.5",
-    "kysely": "0.27.4",
-    "pg": "8.13.0",
-    "prisma": "5.21.1",
+    "@prisma/client": "6.3.1",
+    "hono": "4.6.20",
+    "kysely": "0.27.5",
+    "pg": "8.13.1",
+    "prisma": "6.3.1",
     "prisma-kysely": "1.8.0",
-    "zod": "3.23.8"
+    "zod": "3.24.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/bun": "1.1.11",
-    "@types/pg": "8.11.10",
-    "lefthook": "1.7.22",
-    "typescript": "5.6.3"
+    "@types/bun": "1.2.2",
+    "@types/pg": "8.11.11",
+    "lefthook": "1.10.10",
+    "typescript": "5.7.3"
   }
 }
