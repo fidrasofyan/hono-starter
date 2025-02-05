@@ -1,0 +1,14 @@
+.vscode
+node_modules
+prisma
+test
+utils
+.dockerignore
+.env*
+.git
+.gitignore
+biome.json
+Dockerfile
+lefthook.yml
+*.md
+*.sh
