@@ -1,9 +1,9 @@
 import config from '@/config';
 import { kysely } from '@/database';
+import { appValidator } from '@/lib/common';
 import { generateJWT, verifyJWT } from '@/lib/jwt';
 import type { JWTPayload } from '@/types';
 import { createFactory } from 'hono/factory';
-import { validator } from 'hono/validator';
 import { z } from 'zod';
 
 const factory = createFactory();
@@ -15,18 +15,7 @@ const getTokenSchema = z.object({
 
 export const getTokenHandlers = factory.createHandlers(
   // Validator
-  validator('header', (value, c) => {
-    const parsed = getTokenSchema.safeParse(value);
-    if (!parsed.success) {
-      return c.json(
-        {
-          message: parsed.error.errors[0].message,
-        },
-        400,
-      );
-    }
-    return parsed.data;
-  }),
+  appValidator('header', getTokenSchema),
   // Handler
   async (c) => {
     const headers = c.req.valid('header');

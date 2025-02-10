@@ -1,9 +1,9 @@
 import config from '@/config';
 import { kysely } from '@/database';
+import { appValidator } from '@/lib/common';
 import { verifyPassword } from '@/lib/hashing';
 import { generateJWT } from '@/lib/jwt';
 import { createFactory } from 'hono/factory';
-import { validator } from 'hono/validator';
 import { z } from 'zod';
 
 const factory = createFactory();
@@ -32,21 +32,10 @@ const loginSchema = z.object({
 
 export const loginHandlers = factory.createHandlers(
   // Validator
-  validator('json', (value, c) => {
-    const parsed = loginSchema.safeParse(value);
-    if (!parsed.success) {
-      return c.json(
-        {
-          message: parsed.error.errors[0].message,
-        },
-        400,
-      );
-    }
-    return parsed.data;
-  }),
+  appValidator('json', loginSchema),
   // Handler
   async (c) => {
-    const dto = c.req.valid('json');
+    const body = c.req.valid('json');
 
     const user = await kysely
       .selectFrom('user')
@@ -63,7 +52,7 @@ export const loginHandlers = factory.createHandlers(
         'business.businessId',
         'business.isActive as businessIsActive',
       ])
-      .where('username', '=', dto.username)
+      .where('username', '=', body.username)
       .executeTakeFirst();
 
     if (!user) {
@@ -85,7 +74,7 @@ export const loginHandlers = factory.createHandlers(
     }
 
     if (
-      !(await verifyPassword(dto.password, user.password))
+      !(await verifyPassword(body.password, user.password))
     ) {
       return c.json(
         {
