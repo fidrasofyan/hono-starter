@@ -33,11 +33,12 @@ bun generate-jwt-secret
 
 Configure environment variables in `.env`
 
-#### Migrate database:
+#### Prototyping Database Schemas:
 
 ```bash
-bun migrate-latest
+bun db-dev-push
 ```
+Use `bun db-dev-push` for prototyping schemas. Use `bun db-dev-migrate` to create database migrations.
 
 #### Start the dev server:
 
