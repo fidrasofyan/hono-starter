@@ -1,6 +1,6 @@
 # Hono Starter
 
-This is a starter project for [Hono](https://hono.dev). Make sure you have [Bun](https://bun.sh) installed.
+This is a starter project for [Hono](https://hono.dev). Make sure you have [Bun](https://bun.sh) installed. We use [Prisma](https://www.prisma.io) to manage database migrations and [Kysely](https://kysely.dev) to interact with the database.
 
 Copy the repository using [degit](https://github.com/Rich-Harris/degit):
 
@@ -45,7 +45,7 @@ bun migrate-latest
 bun dev
 ```
 
-## Install git hooks
+## Install git hooks (optional)
 
 `git hooks` is a tool that makes it easy to automate common Git tasks. Learn more [here](https://git-scm.com/docs/githooks). 
 
