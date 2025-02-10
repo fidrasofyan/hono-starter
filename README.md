@@ -54,3 +54,13 @@ bun install-git-hooks
 ```
 
 Enjoy!
+
+## VSCode Snippets
+- Create route handlers
+  ```bash
+  apphandlers
+  ```
+- Create export star
+  ```bash
+  appexportstar
+  ```
