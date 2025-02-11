@@ -1,17 +1,7 @@
-import { validator } from 'hono/validator';
 import type { z } from 'zod';
 
-export function appValidator<T>(
-  target:
-    | 'cookie'
-    | 'form'
-    | 'header'
-    | 'json'
-    | 'param'
-    | 'query',
-  schema: z.ZodSchema<T>,
-) {
-  return validator(target, (value, c) => {
+export function validationFunc<T>(schema: z.ZodSchema<T>) {
+  return (value: any, c: any): T => {
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
       return c.json(
@@ -22,11 +12,11 @@ export function appValidator<T>(
       );
     }
     return parsed.data;
-  });
+  };
 }
 
 export function escapeHTML(
   value: string | object | number | boolean,
 ): string {
-  return Bun.escapeHTML(value);
+  return Bun.escapeHTML(value).trim();
 }
