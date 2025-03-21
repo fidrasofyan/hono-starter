@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     mem_limit: 1G
-    restart: on-failure:3
+    restart: always
     ports:
       - 127.0.0.1:3030:3030
     env_file:

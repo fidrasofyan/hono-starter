@@ -8,6 +8,6 @@ export function websocketEmitToUser(data: {
   emitter.emit('websocket:emit', `user:${data.userId}`, {
     event: data.event,
     data: data.payload,
-    timestamp: Date.now(),
+    ts: Date.now(),
   });
 }

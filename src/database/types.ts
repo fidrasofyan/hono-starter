@@ -4,55 +4,65 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type business = {
-    businessId: Generated<number>;
+export type ActivityLog = {
+    id: Generated<number>;
+    businessId: number;
+    userId: number;
+    action: string;
+    status: string;
+    message: string | null;
+    context: unknown | null;
+    createdAt: Timestamp;
+    updatedAt: Timestamp | null;
+};
+export type Business = {
+    id: Generated<number>;
     isActive: boolean;
     name: string;
     address: string | null;
     createdAt: Timestamp;
     updatedAt: Timestamp | null;
 };
-export type permission = {
-    permissionId: Generated<number>;
+export type Permission = {
+    id: Generated<number>;
     name: string;
-    createdAt: Timestamp;
-    updatedAt: Timestamp | null;
 };
-export type role = {
-    roleId: Generated<number>;
+export type Role = {
+    id: Generated<number>;
     name: string;
     description: string | null;
     createdAt: Timestamp;
     updatedAt: Timestamp | null;
     businessId: number;
 };
-export type role_permission = {
+export type RolePermission = {
     roleId: number;
     permissionId: number;
-    createdAt: Timestamp;
 };
-export type user = {
-    userId: Generated<number>;
+export type User = {
+    id: Generated<number>;
+    businessId: number;
     isActive: boolean;
-    email: string | null;
-    username: string;
-    password: string;
+    email: string;
+    username: string | null;
+    password: string | null;
     firstName: string;
     lastName: string | null;
+    createdBy: number | null;
     createdAt: Timestamp;
+    updatedBy: number | null;
     updatedAt: Timestamp | null;
-    businessId: number;
 };
-export type user_role = {
+export type UserRole = {
     userId: number;
     roleId: number;
-    createdAt: Timestamp;
 };
 export type DB = {
-    business: business;
-    permission: permission;
-    role: role;
-    role_permission: role_permission;
-    user: user;
-    user_role: user_role;
+    ActivityLog: ActivityLog;
+    Business: Business;
+    Permission: Permission;
+    Role: Role;
+    RolePermission: RolePermission;
+    User: User;
+    UserRole: UserRole;
 };

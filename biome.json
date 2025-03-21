@@ -30,7 +30,7 @@
         "noUnusedVariables": "error"
       },
       "suspicious": {
-        "noConsole": "off",
+        "noConsoleLog": "error",
         "noExplicitAny": "off"
       }
     }
@@ -41,5 +41,13 @@
       "trailingCommas": "all",
       "semicolons": "always"
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["**/*.app.ts"],
+      "formatter": {
+        "lineWidth": 100
+      }
+    }
+  ]
 }

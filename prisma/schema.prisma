@@ -16,73 +16,113 @@ generator kysely {
 
 // Models
 
-model business {
-  businessId Int       @id @default(autoincrement())
-  isActive   Boolean
-  name       String    @unique @db.VarChar(50)
-  address    String?   @db.VarChar(100)
+model ActivityLog {
+  id         Int       @id @default(autoincrement())
+  businessId Int
+  userId     Int
+  action     String    @db.VarChar(100)
+  status     String    @db.VarChar(100)
+  message    String?   @db.VarChar(255)
+  context    Json?     @db.JsonB
   createdAt  DateTime  @db.Timestamptz()
   updatedAt  DateTime? @db.Timestamptz()
-  user       user[]
-  role       role[]
+
+  // Foreign key
+  Business Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  User     User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+
+  @@index([businessId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }
 
-model permission {
-  permissionId   Int               @id @default(autoincrement())
-  name           String            @unique @db.VarChar(50)
-  createdAt      DateTime          @db.Timestamptz()
-  updatedAt      DateTime?         @db.Timestamptz()
-  rolePermission role_permission[]
+model Business {
+  id        Int       @id @default(autoincrement())
+  isActive  Boolean
+  name      String    @db.VarChar(50)
+  address   String?   @db.VarChar(100)
+  createdAt DateTime  @db.Timestamptz()
+  updatedAt DateTime? @db.Timestamptz()
+
+  ActivityLog ActivityLog[]
+  Role        Role[]
+  User        User[]
+
+  @@unique([name])
 }
 
-model role {
-  roleId         Int               @id @default(autoincrement())
-  name           String            @db.VarChar(50)
-  description    String?           @db.VarChar(100)
-  createdAt      DateTime          @db.Timestamptz()
-  updatedAt      DateTime?         @db.Timestamptz()
-  userRole       user_role[]
-  rolePermission role_permission[]
-  business       business          @relation(fields: [businessId], references: [businessId], onUpdate: Cascade, onDelete: Cascade)
-  businessId     Int
+model Permission {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(50)
 
-  @@unique([name, businessId])
+  RolePermission RolePermission[]
+
+  @@unique([name])
 }
 
-model role_permission {
+model RolePermission {
   roleId       Int
   permissionId Int
-  createdAt    DateTime   @db.Timestamptz()
-  role         role       @relation(fields: [roleId], references: [roleId], onUpdate: Cascade, onDelete: Cascade)
-  permission   permission @relation(fields: [permissionId], references: [permissionId], onUpdate: Cascade, onDelete: Cascade)
+
+  Role       Role       @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Permission Permission @relation(fields: [permissionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@id([roleId, permissionId])
 }
 
-model user {
-  userId     Int         @id @default(autoincrement())
-  isActive   Boolean
-  email      String?     @db.VarChar(100)
-  username   String      @db.VarChar(100)
-  password   String      @db.VarChar(255)
-  firstName  String      @db.VarChar(50)
-  lastName   String?     @db.VarChar(50)
-  createdAt  DateTime    @db.Timestamptz()
-  updatedAt  DateTime?   @db.Timestamptz()
-  business   business    @relation(fields: [businessId], references: [businessId], onUpdate: Cascade, onDelete: Cascade)
+model Role {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(50)
+  description String?   @db.VarChar(100)
+  createdAt   DateTime  @db.Timestamptz()
+  updatedAt   DateTime? @db.Timestamptz()
+
+  Business   Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Restrict)
   businessId Int
-  userRole   user_role[]
+
+  UserRole       UserRole[]
+  RolePermission RolePermission[]
+
+  @@unique([name, businessId])
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+
+  User User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Role Role @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model User {
+  id         Int     @id @default(autoincrement())
+  businessId Int
+  isActive   Boolean
+  email      String  @db.VarChar(100)
+  username   String? @db.VarChar(100)
+  password   String? @db.VarChar(255)
+  firstName  String  @db.VarChar(50)
+  lastName   String? @db.VarChar(50)
+
+  createdBy Int?
+  createdAt DateTime  @db.Timestamptz()
+  updatedBy Int?
+  updatedAt DateTime? @db.Timestamptz()
+
+  ActivityLog ActivityLog[]
+  UserRole    UserRole[]
+
+  // Foreign key
+  Business Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Restrict)
 
   @@unique([email, businessId])
   @@unique([username, businessId])
-}
-
-model user_role {
-  userId    Int
-  roleId    Int
-  createdAt DateTime @db.Timestamptz()
-  user      user     @relation(fields: [userId], references: [userId], onUpdate: Cascade, onDelete: Cascade)
-  role      role     @relation(fields: [roleId], references: [roleId], onUpdate: Cascade, onDelete: Cascade)
-
-  @@id([userId, roleId])
+  @@index([businessId])
+  @@index([createdBy])
+  @@index([createdAt])
+  @@index([updatedBy])
+  @@index([updatedAt])
 }

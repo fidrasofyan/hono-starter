@@ -1,0 +1,51 @@
+### Login
+# @name login
+POST http://127.0.0.1:3030/api/v1/login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "emailOrUsername": "admin",
+  "password": "987654321"
+}
+
+###
+@token = {{login.response.body.data.token}}
+
+### Get permissions
+GET http://127.0.0.1:3030/api/v1/permissions HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Get roles
+GET http://127.0.0.1:3030/api/v1/roles HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Get role detail
+GET http://127.0.0.1:3030/api/v1/roles/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Create role
+POST http://127.0.0.1:3030/api/v1/roles HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Role 1",
+  "description": "Role 1 description",
+  "permissionIds": [2, 3, 4, 5]
+}
+
+### Update role
+PUT http://127.0.0.1:3030/api/v1/roles/3 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Role 1 updated",
+  "description": "",
+  "permissionIds": [1]
+}
+
+### Delete role
+DELETE http://127.0.0.1:3030/api/v1/roles/3 HTTP/1.1
+Authorization: Bearer {{token}}

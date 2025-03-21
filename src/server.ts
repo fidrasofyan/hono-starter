@@ -4,6 +4,7 @@ import { emitter } from './service/emitter';
 import { websocketHandler } from './websocket';
 
 const server = Bun.serve({
+  development: config.NODE_ENV === 'development',
   hostname: config.APP_HOST,
   port: config.APP_PORT,
   fetch: app.fetch,
@@ -17,6 +18,6 @@ emitter.on(
   },
 );
 
-console.log(
+console.info(
   `${config.APP_NAME} # server running at ${server.url}`,
 );
