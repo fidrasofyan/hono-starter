@@ -8,20 +8,37 @@ import { validator } from 'hono/validator';
 import { z } from 'zod';
 
 const factory = createFactory();
-const getTokenSchema = z.object({
+const getTokenHeaderSchema = z.object({
   authorization: z.string({
     message: 'Authorization header tidak valid',
   }),
 });
+const getTokenQuerySchema = z.object({
+  expiresIn: z
+    .number({
+      coerce: true,
+      message: 'Waktu kadaluarsa tidak valid',
+    })
+    .min(1, {
+      message: 'Waktu kadaluarsa minimal 1 menit',
+    })
+    .max(10, {
+      message: 'Waktu kadaluarsa maksimal 10 menit',
+    })
+    .optional(),
+});
 
 export const getTokenHandlers = factory.createHandlers(
   // Validator
-  validator('header', validationFunc(getTokenSchema)),
+  validator('header', validationFunc(getTokenHeaderSchema)),
+  validator('query', validationFunc(getTokenQuerySchema)),
+
   // Handler
   async (c) => {
-    const headers = c.req.valid('header');
+    const header = c.req.valid('header');
+    const query = c.req.valid('query');
 
-    const token = headers.authorization.split(' ')[1];
+    const token = header.authorization.split(' ')[1];
 
     if (!token) {
       return c.json(
@@ -49,19 +66,20 @@ export const getTokenHandlers = factory.createHandlers(
     }
 
     const user = await kysely
-      .selectFrom('user')
+      .selectFrom('User')
       .innerJoin(
-        'business',
-        'business.businessId',
-        'user.businessId',
+        'Business',
+        'Business.id',
+        'User.businessId',
       )
       .select([
-        'userId',
-        'user.isActive',
-        'business.businessId',
-        'business.isActive as businessIsActive',
+        'User.id',
+        'User.isActive',
+        'Business.id as businessId',
+        'Business.isActive as businessIsActive',
       ])
-      .where('userId', '=', decoded.userId)
+      .where('User.id', '=', decoded.userId)
+      .where('Business.id', '=', decoded.businessId)
       .executeTakeFirst();
 
     if (!user) {
@@ -76,7 +94,7 @@ export const getTokenHandlers = factory.createHandlers(
     if (!user.businessIsActive) {
       return c.json(
         {
-          message: 'Aplikasi tidak aktif',
+          message: 'Akun bisnis tidak aktif',
         },
         401,
       );
@@ -91,6 +109,9 @@ export const getTokenHandlers = factory.createHandlers(
       );
     }
 
+    const expiresIn =
+      query.expiresIn ?? config.TOKEN_EXPIRES_IN_MINUTES;
+
     return c.json(
       {
         data: {
@@ -99,9 +120,9 @@ export const getTokenHandlers = factory.createHandlers(
               iat: Math.floor(Date.now() / 1000),
               exp:
                 Math.floor(Date.now() / 1000) +
-                60 * config.TOKEN_EXPIRES_IN_MINUTES,
+                60 * expiresIn,
               businessId: user.businessId,
-              userId: user.userId,
+              userId: user.id,
             },
             config.TOKEN_SECRET_KEY,
           ),

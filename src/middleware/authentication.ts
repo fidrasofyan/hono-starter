@@ -55,18 +55,18 @@ export const authenticationMiddleware = createMiddleware(
     }
 
     const user = await kysely
-      .selectFrom('user')
+      .selectFrom('User')
       .innerJoin(
-        'business',
-        'business.businessId',
-        'user.businessId',
+        'Business',
+        'Business.id',
+        'User.businessId',
       )
       .select([
-        'user.userId',
-        'user.isActive',
-        'business.isActive as businessIsActive',
+        'User.id',
+        'User.isActive',
+        'Business.isActive as businessIsActive',
       ])
-      .where('userId', '=', decoded.userId)
+      .where('User.id', '=', decoded.userId)
       .executeTakeFirst();
 
     if (!user) {

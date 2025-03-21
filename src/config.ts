@@ -54,7 +54,7 @@ const config = {
   ),
 };
 
-console.log(
+console.info(
   `${config.APP_NAME} # Bun: v${Bun.version} - env: ${config.NODE_ENV} - version: v${packageJson.version}`,
 );
 

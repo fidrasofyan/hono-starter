@@ -35,4 +35,4 @@ modifyEnvLine(
   randomBytes(32).toString('base64'),
 );
 
-console.log('Done!');
+console.info('Done!');

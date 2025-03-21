@@ -26,6 +26,6 @@ export const kysely = new Kysely<DB>({
 
 // Test connection
 await sql`SELECT 1`.execute(kysely);
-console.log(
-  `${config.APP_NAME} # database connection has been established successfully`,
+console.info(
+  `${config.APP_NAME} # database: (${config.DATABASE_HOST}:${config.DATABASE_PORT} - ${config.DATABASE_NAME}) connected`,
 );

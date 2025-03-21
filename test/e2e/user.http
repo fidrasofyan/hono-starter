@@ -5,21 +5,81 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "admin",
-  "password": "admin"
+  "emailOrUsername": "admin",
+  "password": "987654321"
 }
 
 ###
+@token = {{login.response.body.data.token}}
 @refreshToken = {{login.response.body.data.refreshToken}}
 
 ### Refresh token
 # @name getToken
-GET http://127.0.0.1:3030/api/v1/token HTTP/1.1
+GET http://127.0.0.1:3030/api/v1/token?expiresIn=1 HTTP/1.1
 Authorization: Bearer {{refreshToken}}
 
 ###
-@token = {{getToken.response.body.data.token}}
+@newToken = {{getToken.response.body.data.token}}
 
-### Get user info
+### Get current user
 GET http://127.0.0.1:3030/api/v1/user HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Change self password
+PUT http://127.0.0.1:3030/api/v1/user/password HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "oldPassword": "987654321",
+  "newPassword": "987654321"
+}
+
+### Get users
+GET http://127.0.0.1:3030/api/v1/users?page=1&limit=10&query= HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Get user detail
+GET http://127.0.0.1:3030/api/v1/users/1 HTTP/1.1
+Authorization: Bearer {{token}}
+
+### Create user
+POST http://127.0.0.1:3030/api/v1/users HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "User",
+  "email": "user@email.com",
+  "username": "user",
+  "password": "987654321",
+  "roleIds": [2]
+}
+
+### Update user
+PUT http://127.0.0.1:3030/api/v1/users/2 HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "User",
+  "email": "user@email.com",
+  "username": "user",
+  "password": "987654321",
+  "roleIds": [2],
+  "isActive": false
+}
+
+### Change password
+PUT http://127.0.0.1:3030/api/v1/users/2/password HTTP/1.1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "oldPassword": "987654321",
+  "newPassword": "987654321"
+}
+
+### Delete user
+DELETE http://127.0.0.1:3030/api/v1/users/2 HTTP/1.1
 Authorization: Bearer {{token}}

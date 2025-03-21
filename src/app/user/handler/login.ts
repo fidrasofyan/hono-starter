@@ -9,57 +9,73 @@ import { z } from 'zod';
 
 const factory = createFactory();
 const loginSchema = z.object({
-  username: z
+  emailOrUsername: z
     .string({
-      message: 'Username/password tidak valid',
+      message: 'Email/username harus diisi',
     })
     .min(1, {
-      message: 'Username harus diisi',
+      message: 'Email/username harus diisi',
     })
     .max(50, {
-      message: 'Username/password tidak valid',
+      message: 'Email/username tidak valid',
     }),
   password: z
     .string({
-      message: 'Username/password tidak valid',
+      message: 'Password harus diisi',
     })
     .min(1, {
-      message: 'Username harus diisi',
+      message: 'Password harus diisi',
     })
     .max(50, {
-      message: 'Username/password tidak valid',
+      message: 'Password tidak valid',
     }),
 });
 
 export const loginHandlers = factory.createHandlers(
   // Validator
   validator('json', validationFunc(loginSchema)),
+
   // Handler
   async (c) => {
     const body = c.req.valid('json');
 
     const user = await kysely
-      .selectFrom('user')
+      .selectFrom('User')
       .innerJoin(
-        'business',
-        'business.businessId',
-        'user.businessId',
+        'Business',
+        'Business.id',
+        'User.businessId',
       )
       .select([
-        'user.userId',
-        'user.isActive',
-        'user.username',
-        'user.password',
-        'business.businessId',
-        'business.isActive as businessIsActive',
+        'User.id',
+        'User.isActive',
+        'User.username',
+        'User.password',
+        'Business.id as businessId',
+        'Business.isActive as businessIsActive',
       ])
-      .where('username', '=', body.username)
+      .where((eb) =>
+        eb.or([
+          eb('username', '=', body.emailOrUsername),
+          eb('email', '=', body.emailOrUsername),
+        ]),
+      )
       .executeTakeFirst();
 
     if (!user) {
       return c.json(
         {
-          message: 'Username/password tidak valid',
+          message: 'Kredensial tidak valid',
+        },
+        422,
+      );
+    }
+
+    if (!user.password) {
+      return c.json(
+        {
+          message:
+            'Akun tidak support login dengan password',
         },
         422,
       );
@@ -68,7 +84,7 @@ export const loginHandlers = factory.createHandlers(
     if (!user.businessIsActive) {
       return c.json(
         {
-          message: 'Aplikasi tidak aktif',
+          message: 'Akun bisnis tidak aktif',
         },
         422,
       );
@@ -79,7 +95,7 @@ export const loginHandlers = factory.createHandlers(
     ) {
       return c.json(
         {
-          message: 'Username/password tidak valid',
+          message: 'Kredensial tidak valid',
         },
         422,
       );
@@ -96,7 +112,7 @@ export const loginHandlers = factory.createHandlers(
 
     return c.json(
       {
-        message: 'Login berhasil',
+        message: 'Login berhasil!',
         data: {
           token: await generateJWT(
             {
@@ -105,7 +121,7 @@ export const loginHandlers = factory.createHandlers(
                 Math.floor(Date.now() / 1000) +
                 60 * config.TOKEN_EXPIRES_IN_MINUTES,
               businessId: user.businessId,
-              userId: user.userId,
+              userId: user.id,
             },
             config.TOKEN_SECRET_KEY,
           ),
@@ -119,7 +135,7 @@ export const loginHandlers = factory.createHandlers(
                   24 *
                   config.REFRESH_TOKEN_EXPIRES_IN_DAYS,
               businessId: user.businessId,
-              userId: user.userId,
+              userId: user.id,
             },
             config.REFRESH_TOKEN_SECRET_KEY,
           ),

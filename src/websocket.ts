@@ -6,106 +6,79 @@ import type { BunWebSocketData, JWTPayload } from './types';
 
 export const websocketHandler: WebSocketHandler<BunWebSocketData> =
   {
+    idleTimeout: 120, // 120 seconds
     async open(ws) {
-      if (!ws.data.refreshToken) {
-        ws.send(
-          JSON.stringify({
-            event: 'error',
-            data: {
-              message: 'Token not found',
-            },
-          }),
-        );
-        ws.close();
+      if (!ws.data.token) {
+        ws.close(4001, 'Token not found');
         return;
       }
 
       let decoded: JWTPayload;
 
       try {
-        decoded = decoded = await verifyJWT(
-          ws.data.refreshToken,
-          config.REFRESH_TOKEN_SECRET_KEY,
+        decoded = await verifyJWT(
+          ws.data.token,
+          config.TOKEN_SECRET_KEY,
         );
       } catch (_error) {
-        ws.send(
-          JSON.stringify({
-            event: 'error',
-            data: {
-              message: 'Invalid token',
-            },
-          }),
-        );
-        ws.close();
+        ws.close(4001, 'Invalid token');
         return;
       }
 
       const user = await kysely
-        .selectFrom('user')
+        .selectFrom('User')
         .innerJoin(
-          'business',
-          'business.businessId',
-          'user.businessId',
+          'Business',
+          'Business.id',
+          'User.businessId',
         )
         .select([
-          'user.userId',
-          'user.isActive',
-          'business.isActive as businessIsActive',
+          'User.id',
+          'User.isActive',
+          'Business.isActive as businessIsActive',
         ])
-        .where('user.userId', '=', decoded.userId)
+        .where('User.id', '=', decoded.userId)
+        .where('Business.id', '=', decoded.businessId)
         .executeTakeFirst();
 
       if (!user) {
-        ws.send(
-          JSON.stringify({
-            event: 'error',
-            data: {
-              message: 'User not found',
-            },
-          }),
-        );
-        ws.close();
+        ws.close(4004, 'User not found');
         return;
       }
 
       if (!user.businessIsActive) {
-        ws.send(
-          JSON.stringify({
-            event: 'error',
-            data: {
-              message: 'Business not active',
-            },
-          }),
-        );
-        ws.close();
+        ws.close(4022, 'Business not active');
         return;
       }
 
       if (!user.isActive) {
-        ws.send(
-          JSON.stringify({
-            event: 'error',
-            data: {
-              message: 'User not active',
-            },
-          }),
-        );
-        ws.close();
+        ws.close(4022, 'User not active');
         return;
       }
 
       ws.subscribe('default');
-      ws.subscribe(`user:${user.userId}`);
+      ws.subscribe(`user:${user.id}`);
 
       if (config.NODE_ENV === 'development') {
-        console.log(
-          `websocket # user:${user.userId} connected`,
+        console.info(
+          `* WEBSOCKET user:${user.id} connected`,
         );
       }
     },
     message(ws, message) {
+      // Heartbeat
       if (message === 'ping') {
         ws.send('pong');
+      }
+
+      if (
+        config.NODE_ENV === 'development' &&
+        message !== 'ping'
+      ) {
+        console.info(
+          `* WEBSOCKET ${ws.remoteAddress} message:`,
+          message,
+        );
       }
     },
   };

@@ -6,7 +6,13 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "always"
   },
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[snippets]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
   }
 }

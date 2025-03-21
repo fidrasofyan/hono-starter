@@ -8,7 +8,7 @@ export type BunServer = {
 };
 
 export type BunWebSocketData = {
-  refreshToken: string | undefined;
+  token: string | undefined;
 };
 
 export type JWTPayload = {
@@ -18,3 +18,11 @@ export type JWTPayload = {
   businessId: number;
   userId: number;
 };
+
+export type UserPermission =
+  | 'admin'
+  // user
+  | 'user:create'
+  | 'user:read'
+  | 'user:update'
+  | 'user:delete';
