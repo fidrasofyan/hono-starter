@@ -9,7 +9,8 @@ function readEnvSync(name: string): string {
   } catch (_error) {
     const env = process.env[name];
     if (!env) {
-      throw new Error(`${name} is undefined`);
+      console.error(`${name} is undefined`);
+      process.exit(1);
     }
     return env;
   }
@@ -53,6 +54,14 @@ const config = {
     readEnvSync('REFRESH_TOKEN_EXPIRES_IN_DAYS'),
   ),
 };
+
+// Validate config
+const validNodeEnvs = ['production', 'development'];
+
+if (!validNodeEnvs.includes(config.NODE_ENV)) {
+  console.error(`Invalid NODE_ENV: ${config.NODE_ENV}`);
+  process.exit(1);
+}
 
 console.info(
   `${config.APP_NAME} # Bun: v${Bun.version} - env: ${config.NODE_ENV} - version: v${packageJson.version}`,
