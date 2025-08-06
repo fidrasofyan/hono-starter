@@ -1,6 +1,6 @@
 ### Login
 # @name login
-POST http://127.0.0.1:3030/api/v1/login HTTP/1.1
+POST http://127.0.0.1:3030/api/v1/login?type=token HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 

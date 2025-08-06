@@ -60,7 +60,7 @@ export const websocketHandler: WebSocketHandler<BunWebSocketData> =
       ws.subscribe(`user:${user.id}`);
 
       if (config.NODE_ENV === 'development') {
-        console.info(
+        console.log(
           `* WEBSOCKET user:${user.id} connected`,
         );
       }
@@ -75,7 +75,7 @@ export const websocketHandler: WebSocketHandler<BunWebSocketData> =
         config.NODE_ENV === 'development' &&
         message !== 'ping'
       ) {
-        console.info(
+        console.log(
           `* WEBSOCKET ${ws.remoteAddress} message:`,
           message,
         );

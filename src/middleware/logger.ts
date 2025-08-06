@@ -30,7 +30,7 @@ export const loggerMiddleware = createMiddleware(
     const start = Date.now();
     await next();
     const duration = Date.now() - start;
-    console.info(
+    console.log(
       `* ${c.req.method} ${extractUrl(c.req.url)} ${colorStatus(c.res.status)} ${duration}ms`,
     );
   },

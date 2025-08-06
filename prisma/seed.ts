@@ -6,7 +6,7 @@ type AllPresent<T extends string> = { [K in T]: number };
 const prisma = new PrismaClient();
 
 try {
-  console.info('Inserting initial data...');
+  console.log('Inserting initial data...');
   const date = new Date();
 
   await prisma.$transaction(
@@ -144,7 +144,7 @@ try {
     },
   );
 
-  console.info('Initial data inserted successfully');
+  console.log('Initial data inserted successfully');
 } catch (error) {
   console.error(error);
 } finally {

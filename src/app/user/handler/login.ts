@@ -1,3 +1,4 @@
+import { setCookie } from 'hono/cookie';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { z } from 'zod';
@@ -8,35 +9,44 @@ import { verifyPassword } from '@/lib/hashing';
 import { generateJWT } from '@/lib/jwt';
 
 const factory = createFactory();
+const loginQuerySchema = z.object({
+  type: z
+    .enum(['token', 'cookie'], {
+      error: 'Tipe login tidak valid',
+    })
+    .optional(),
+});
 const loginSchema = z.object({
   emailOrUsername: z
     .string({
-      message: 'Email/username harus diisi',
+      error: 'Email/username harus diisi',
     })
     .min(1, {
-      message: 'Email/username harus diisi',
+      error: 'Email/username harus diisi',
     })
     .max(50, {
-      message: 'Email/username tidak valid',
+      error: 'Email/username tidak valid',
     }),
   password: z
     .string({
-      message: 'Password harus diisi',
+      error: 'Password harus diisi',
     })
     .min(1, {
-      message: 'Password harus diisi',
+      error: 'Password harus diisi',
     })
     .max(50, {
-      message: 'Password tidak valid',
+      error: 'Password tidak valid',
     }),
 });
 
 export const loginHandlers = factory.createHandlers(
   // Validator
+  validator('query', validationFunc(loginQuerySchema)),
   validator('json', validationFunc(loginSchema)),
 
   // Handler
   async (c) => {
+    const query = c.req.valid('query');
     const body = c.req.valid('json');
 
     const user = await kysely
@@ -56,8 +66,8 @@ export const loginHandlers = factory.createHandlers(
       ])
       .where((eb) =>
         eb.or([
-          eb('username', '=', body.emailOrUsername),
-          eb('email', '=', body.emailOrUsername),
+          eb('User.username', '=', body.emailOrUsername),
+          eb('User.email', '=', body.emailOrUsername),
         ]),
       )
       .executeTakeFirst();
@@ -110,36 +120,61 @@ export const loginHandlers = factory.createHandlers(
       );
     }
 
+    const token = await generateJWT(
+      {
+        iat: Math.floor(Date.now() / 1000),
+        exp:
+          Math.floor(Date.now() / 1000) +
+          60 * config.TOKEN_EXPIRES_IN_MINUTES,
+        businessId: user.businessId,
+        userId: user.id,
+      },
+      config.TOKEN_SECRET_KEY,
+    );
+
+    const refreshToken = await generateJWT(
+      {
+        iat: Math.floor(Date.now() / 1000),
+        exp:
+          Math.floor(Date.now() / 1000) +
+          60 *
+            60 *
+            24 *
+            config.REFRESH_TOKEN_EXPIRES_IN_DAYS,
+        businessId: user.businessId,
+        userId: user.id,
+      },
+      config.REFRESH_TOKEN_SECRET_KEY,
+    );
+
+    if (query.type === 'token') {
+      return c.json(
+        {
+          message: 'Login berhasil',
+          data: {
+            token,
+            refreshToken,
+          },
+        },
+        200,
+      );
+    }
+
+    setCookie(c, 'token', token, {
+      ...config.COOKIE_OPTIONS,
+      maxAge: config.TOKEN_EXPIRES_IN_MINUTES * 60,
+    });
+
+    setCookie(c, 'refreshToken', refreshToken, {
+      ...config.COOKIE_OPTIONS,
+      path: '/api/v1/token',
+      maxAge:
+        config.REFRESH_TOKEN_EXPIRES_IN_DAYS * 60 * 60 * 24,
+    });
+
     return c.json(
       {
-        message: 'Login berhasil!',
-        data: {
-          token: await generateJWT(
-            {
-              iat: Math.floor(Date.now() / 1000),
-              exp:
-                Math.floor(Date.now() / 1000) +
-                60 * config.TOKEN_EXPIRES_IN_MINUTES,
-              businessId: user.businessId,
-              userId: user.id,
-            },
-            config.TOKEN_SECRET_KEY,
-          ),
-          refreshToken: await generateJWT(
-            {
-              iat: Math.floor(Date.now() / 1000),
-              exp:
-                Math.floor(Date.now() / 1000) +
-                60 *
-                  60 *
-                  24 *
-                  config.REFRESH_TOKEN_EXPIRES_IN_DAYS,
-              businessId: user.businessId,
-              userId: user.id,
-            },
-            config.REFRESH_TOKEN_SECRET_KEY,
-          ),
-        },
+        message: 'Login berhasil',
       },
       200,
     );
