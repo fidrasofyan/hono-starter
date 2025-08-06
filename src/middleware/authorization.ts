@@ -1,6 +1,6 @@
+import { createMiddleware } from 'hono/factory';
 import { kysely } from '@/database';
 import type { JWTPayload, UserPermission } from '@/types';
-import { createMiddleware } from 'hono/factory';
 
 export function userCan(permission: UserPermission) {
   return createMiddleware(async (c, next) => {

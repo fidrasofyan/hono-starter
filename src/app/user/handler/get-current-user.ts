@@ -1,7 +1,7 @@
-import { kysely } from '@/database';
-import type { JWTPayload } from '@/types';
 import { createFactory } from 'hono/factory';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { kysely } from '@/database';
+import type { JWTPayload } from '@/types';
 
 const factory = createFactory();
 

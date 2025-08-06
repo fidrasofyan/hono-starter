@@ -1,11 +1,11 @@
+import { createFactory } from 'hono/factory';
+import { validator } from 'hono/validator';
+import { z } from 'zod';
 import config from '@/config';
 import { kysely } from '@/database';
 import { validationFunc } from '@/lib/common';
 import { verifyPassword } from '@/lib/hashing';
 import { generateJWT } from '@/lib/jwt';
-import { createFactory } from 'hono/factory';
-import { validator } from 'hono/validator';
-import { z } from 'zod';
 
 const factory = createFactory();
 const loginSchema = z.object({

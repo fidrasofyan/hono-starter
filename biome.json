@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,10 +7,11 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "**/*.code-snippets",
-      "src/database/types.ts",
-      "src/database/enums.ts"
+    "includes": [
+      "**",
+      "!**/*.code-snippets",
+      "!**/src/database/types.ts",
+      "!**/src/database/enums.ts"
     ]
   },
   "formatter": {
@@ -19,8 +20,13 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
@@ -30,8 +36,8 @@
         "noUnusedVariables": "error"
       },
       "suspicious": {
-        "noConsoleLog": "error",
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noDoubleEquals": "error"
       }
     }
   },
@@ -44,7 +50,7 @@
   },
   "overrides": [
     {
-      "include": ["**/*.app.ts"],
+      "includes": ["**/*.app.ts"],
       "formatter": {
         "lineWidth": 100
       }

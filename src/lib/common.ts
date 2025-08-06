@@ -1,14 +1,14 @@
 import type { z } from 'zod';
 
-export function validationFunc<T>(schema: z.ZodSchema<T>) {
+export function validationFunc<T>(schema: z.Schema<T>) {
   return (value: any, c: any): T => {
     const parsed = schema.safeParse(value);
     if (!parsed.success) {
       return c.json(
         {
-          message: parsed.error.errors[0].message,
+          message: parsed.error.issues[0].message,
         },
-        400,
+        422,
       );
     }
     return parsed.data;
