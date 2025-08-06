@@ -1,3 +1,6 @@
+import { createFactory } from 'hono/factory';
+import { validator } from 'hono/validator';
+import { z } from 'zod';
 import { kysely } from '@/database';
 import { escapeHTML, validationFunc } from '@/lib/common';
 import { hashPassword } from '@/lib/hashing';
@@ -5,9 +8,6 @@ import { userCan } from '@/middleware';
 import { logActivity } from '@/service/logger';
 import { websocketEmitToUser } from '@/service/websocket';
 import type { JWTPayload } from '@/types';
-import { createFactory } from 'hono/factory';
-import { validator } from 'hono/validator';
-import { z } from 'zod';
 
 const factory = createFactory();
 const createUserSchema = z
@@ -53,9 +53,8 @@ const createUserSchema = z
       .optional(),
     roleIds: z
       .array(
-        z
+        z.coerce
           .number({
-            coerce: true,
             message: 'Wewenang harus dipilih',
           })
           .min(1, {

@@ -1,6 +1,6 @@
-import config from '@/config';
 import { Kysely, PostgresDialect, sql } from 'kysely';
 import { Pool } from 'pg';
+import config from '@/config';
 import type { DB } from './types';
 
 const pool = new Pool({

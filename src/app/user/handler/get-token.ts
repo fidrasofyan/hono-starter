@@ -1,11 +1,11 @@
+import { createFactory } from 'hono/factory';
+import { validator } from 'hono/validator';
+import { z } from 'zod';
 import config from '@/config';
 import { kysely } from '@/database';
 import { validationFunc } from '@/lib/common';
 import { generateJWT, verifyJWT } from '@/lib/jwt';
 import type { JWTPayload } from '@/types';
-import { createFactory } from 'hono/factory';
-import { validator } from 'hono/validator';
-import { z } from 'zod';
 
 const factory = createFactory();
 const getTokenHeaderSchema = z.object({
@@ -14,9 +14,8 @@ const getTokenHeaderSchema = z.object({
   }),
 });
 const getTokenQuerySchema = z.object({
-  expiresIn: z
+  expiresIn: z.coerce
     .number({
-      coerce: true,
       message: 'Waktu kadaluarsa tidak valid',
     })
     .min(1, {

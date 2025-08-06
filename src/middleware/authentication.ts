@@ -1,8 +1,8 @@
+import { createMiddleware } from 'hono/factory';
 import config from '@/config';
 import { kysely } from '@/database';
 import { verifyJWT } from '@/lib/jwt';
 import type { JWTPayload } from '@/types';
-import { createMiddleware } from 'hono/factory';
 
 export const authenticationMiddleware = createMiddleware(
   async (c, next) => {

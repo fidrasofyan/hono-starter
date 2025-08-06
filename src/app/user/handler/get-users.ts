@@ -1,21 +1,19 @@
-import { kysely } from '@/database';
-import { validationFunc } from '@/lib/common';
-import { userCan } from '@/middleware';
-import type { JWTPayload } from '@/types';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { z } from 'zod';
+import { kysely } from '@/database';
+import { validationFunc } from '@/lib/common';
+import { userCan } from '@/middleware';
+import type { JWTPayload } from '@/types';
 
 const factory = createFactory();
 const getUsersSchema = z.object({
-  page: z.number({
-    coerce: true,
+  page: z.coerce.number({
     message: 'Halaman tidak valid',
   }),
-  limit: z
+  limit: z.coerce
     .number({
-      coerce: true,
       message: 'Limit tidak valid',
     })
     .max(1000, {

@@ -1,16 +1,15 @@
-import { kysely } from '@/database';
-import { validationFunc } from '@/lib/common';
-import { userCan } from '@/middleware';
-import type { JWTPayload } from '@/types';
 import { createFactory } from 'hono/factory';
 import { validator } from 'hono/validator';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { z } from 'zod';
+import { kysely } from '@/database';
+import { validationFunc } from '@/lib/common';
+import { userCan } from '@/middleware';
+import type { JWTPayload } from '@/types';
 
 const factory = createFactory();
 const getRoleDetailSchema = z.object({
-  id: z.number({
-    coerce: true,
+  id: z.coerce.number({
     message: 'Hak akses tidak valid',
   }),
 });

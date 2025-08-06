@@ -1,6 +1,6 @@
+import { createFactory } from 'hono/factory';
 import { kysely } from '@/database';
 import { userCan } from '@/middleware';
-import { createFactory } from 'hono/factory';
 
 const factory = createFactory();
 
