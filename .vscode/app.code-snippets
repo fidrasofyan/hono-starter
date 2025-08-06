@@ -1,6 +1,6 @@
 {
-	"Route handlers": {
-		"prefix": "apphandlers",
+	"App route handlers": {
+		"prefix": "apphandler",
 		"description": "Create route handlers",
 		"body": [
 			"import { validationFunc } from '@/lib/common';",
@@ -46,6 +46,31 @@
 			"",
 		]
 	},
+	"App routes": {
+		"prefix": "approute",
+		"description": "Create routes",
+		"body": [
+			"import { Hono } from 'hono';",
+			"",
+			"export const ${1:user}App = new Hono()",
+			"  .get('/${2}', ...${3:handlers});",
+		]
+	},
+	"App log": {
+		"prefix": "applog",
+		"description": "Create log",
+		"body": [
+			"await logActivity(trx, {",
+			"  businessId: jwtPayload.businessId,",
+			"  userId: jwtPayload.userId,",
+			"  action: '${1:pelanggan}:${2:update}',",
+			"  status: 'success',",
+			"  context: {",
+			"    id: ${3:id},",
+			"  },",
+			"});"
+		]
+	},
 	"Export start": {
 		"prefix": "appexportstar",
 		"description": "Export start",
@@ -59,5 +84,5 @@
 		"body": [
 			"const result = await kysely.transaction().execute(async (trx) => {${0}});",
 		]
-	}
+	},
 }
