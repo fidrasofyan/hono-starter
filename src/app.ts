@@ -33,13 +33,14 @@ app.use(
 app.use(
   cors({
     origin: config.CORS_ALLOWED_ORIGINS,
+    credentials: true,
   }),
 );
 
 // App routes
 app.route('/', routes);
 
-//// Websocket upgrade
+// Websocket upgrade
 app.get('/socket', async (c, next) => {
   const server = (
     'server' in (c.env as any)

@@ -1,3 +1,4 @@
+import { deleteCookie, getCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
 import config from '@/config';
 import { kysely } from '@/database';
@@ -16,26 +17,32 @@ export const authenticationMiddleware = createMiddleware(
       return;
     }
 
-    const authHeader = c.req.header('Authorization');
+    // Get token from cookie
+    let token = getCookie(c, 'token');
 
-    if (!authHeader) {
-      return c.json(
-        {
-          message: 'Token tidak ditemukan',
-        },
-        401,
-      );
-    }
-
-    const token = authHeader.split(' ')[1];
-
+    // Get token from header if cookie is not found
     if (!token) {
-      return c.json(
-        {
-          message: 'Token tidak valid',
-        },
-        401,
-      );
+      const authHeader = c.req.header('Authorization');
+
+      if (!authHeader) {
+        return c.json(
+          {
+            message: 'Unauthenticated',
+          },
+          401,
+        );
+      }
+
+      token = authHeader.split(' ')[1];
+
+      if (!token) {
+        return c.json(
+          {
+            message: 'Unauthenticated',
+          },
+          401,
+        );
+      }
     }
 
     let decoded: JWTPayload;
@@ -46,9 +53,11 @@ export const authenticationMiddleware = createMiddleware(
         config.TOKEN_SECRET_KEY,
       );
     } catch (_error) {
+      deleteCookie(c, 'token');
+
       return c.json(
         {
-          message: 'Token tidak valid',
+          message: 'Invalid session',
         },
         401,
       );
@@ -67,6 +76,7 @@ export const authenticationMiddleware = createMiddleware(
         'Business.isActive as businessIsActive',
       ])
       .where('User.id', '=', decoded.userId)
+      .where('Business.id', '=', decoded.businessId)
       .executeTakeFirst();
 
     if (!user) {
@@ -81,7 +91,7 @@ export const authenticationMiddleware = createMiddleware(
     if (!user.businessIsActive) {
       return c.json(
         {
-          message: 'Aplikasi tidak aktif',
+          message: 'Akun bisnis tidak aktif',
         },
         401,
       );

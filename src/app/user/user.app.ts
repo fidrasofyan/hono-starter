@@ -8,10 +8,12 @@ import { getTokenHandlers } from './handler/get-token';
 import { getUserDetailHandlers } from './handler/get-user-detail';
 import { getUsersHandlers } from './handler/get-users';
 import { loginHandlers } from './handler/login';
+import { logoutHandlers } from './handler/logout';
 import { updateUserHandlers } from './handler/update-user';
 
 export const userApp = new Hono()
   .post('/login', ...loginHandlers)
+  .post('/logout', ...logoutHandlers)
   .get('/token', ...getTokenHandlers)
   .get('/user', ...getCurrentUserHandlers)
   .put('/user/password', ...changeSelfPasswordHandlers)

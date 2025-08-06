@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import type { CookieOptions } from 'hono/utils/cookie';
 import packageJson from '../package.json';
 
 function readEnvSync(name: string): string {
@@ -15,6 +16,12 @@ function readEnvSync(name: string): string {
     return env;
   }
 }
+
+const cookieOptions: CookieOptions = {
+  secure: true,
+  httpOnly: true,
+  sameSite: 'strict',
+};
 
 const config = {
   // App
@@ -53,6 +60,9 @@ const config = {
   REFRESH_TOKEN_EXPIRES_IN_DAYS: Number.parseInt(
     readEnvSync('REFRESH_TOKEN_EXPIRES_IN_DAYS'),
   ),
+
+  // Cookie
+  COOKIE_OPTIONS: cookieOptions,
 };
 
 // Validate config
@@ -63,7 +73,7 @@ if (!validNodeEnvs.includes(config.NODE_ENV)) {
   process.exit(1);
 }
 
-console.info(
+console.log(
   `${config.APP_NAME} # Bun: v${Bun.version} - env: ${config.NODE_ENV} - version: v${packageJson.version}`,
 );
 

@@ -18,6 +18,6 @@ emitter.on(
   },
 );
 
-console.info(
+console.log(
   `${config.APP_NAME} # server running at ${server.url}`,
 );
