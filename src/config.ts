@@ -32,7 +32,7 @@ const config = {
   APP_TIMEZONE: readEnvSync('APP_TIMEZONE'),
   APP_LOCALE: readEnvSync('APP_LOCALE'),
   APP_HOST: readEnvSync('APP_HOST'),
-  APP_PORT: Number.parseInt(readEnvSync('APP_PORT')),
+  APP_PORT: Number.parseInt(readEnvSync('APP_PORT'), 10),
   CORS_ALLOWED_ORIGINS: readEnvSync('CORS_ALLOWED_ORIGINS')
     .split(',')
     .map((x) => x.trim()),
@@ -41,12 +41,14 @@ const config = {
   DATABASE_HOST: readEnvSync('DATABASE_HOST'),
   DATABASE_PORT: Number.parseInt(
     readEnvSync('DATABASE_PORT'),
+    10,
   ),
   DATABASE_USER: readEnvSync('DATABASE_USER'),
   DATABASE_PASSWORD: readEnvSync('DATABASE_PASSWORD'),
   DATABASE_NAME: readEnvSync('DATABASE_NAME'),
   DATABASE_CONNECTION_LIMIT: Number.parseInt(
     readEnvSync('DATABASE_CONNECTION_LIMIT'),
+    10,
   ),
 
   // JWT
@@ -56,9 +58,11 @@ const config = {
   ),
   TOKEN_EXPIRES_IN_MINUTES: Number.parseInt(
     readEnvSync('TOKEN_EXPIRES_IN_MINUTES'),
+    10,
   ),
   REFRESH_TOKEN_EXPIRES_IN_DAYS: Number.parseInt(
     readEnvSync('REFRESH_TOKEN_EXPIRES_IN_DAYS'),
+    10,
   ),
 
   // Cookie

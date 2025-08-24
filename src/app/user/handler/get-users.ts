@@ -61,7 +61,7 @@ export const getUsersHandlers = factory.createHandlers(
     ).total;
 
     let totalPage = Math.ceil(
-      Number.parseInt(totalData) / query.limit,
+      Number.parseInt(totalData, 10) / query.limit,
     );
     if (totalPage === 0) totalPage = 1;
 
@@ -112,7 +112,7 @@ export const getUsersHandlers = factory.createHandlers(
 
     return c.json(
       {
-        totalData: Number.parseInt(totalData),
+        totalData: Number.parseInt(totalData, 10),
         totalPage: totalPage,
         page: query.page,
         limit: query.limit,

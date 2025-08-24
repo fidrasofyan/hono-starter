@@ -67,7 +67,7 @@ export const createRoleHandlers = factory.createHandlers(
       .where('Role.businessId', '=', jwtPayload.businessId)
       .executeTakeFirstOrThrow();
 
-    if (Number.parseInt(count.total) >= 50) {
+    if (Number.parseInt(count.total, 10) >= 50) {
       return c.json(
         {
           message: 'Hak akses sudah maksimal',
@@ -107,6 +107,7 @@ export const createRoleHandlers = factory.createHandlers(
           .where('Permission.id', 'in', body.permissionIds)
           .executeTakeFirstOrThrow()
       ).total,
+      10,
     );
 
     if (permissionFound !== body.permissionIds.length) {
