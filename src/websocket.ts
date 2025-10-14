@@ -7,6 +7,7 @@ import type { BunWebSocketData, JWTPayload } from './types';
 export const websocketHandler: WebSocketHandler<BunWebSocketData> =
   {
     idleTimeout: 120, // 120 seconds
+    maxPayloadLength: 1024 * 1024, // 1 MB
     async open(ws) {
       if (!ws.data.token) {
         ws.close(4001, 'Token not found');

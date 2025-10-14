@@ -3,6 +3,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Generators
+
+generator prisma {
+  provider = "prisma-client-js"
+}
+
 generator kysely {
   provider     = "prisma-kysely"
   output       = "../src/database"

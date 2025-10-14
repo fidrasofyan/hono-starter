@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import type { UserPermission } from '../src/types';
+import type { UserPermission } from '@/types';
 
 type AllPresent<T extends string> = { [K in T]: number };
 
